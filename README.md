@@ -269,7 +269,7 @@ def choose_deck_name(decks_name: list[str], key: str) -> str:
 
 
 ## Demo Video
-[YouTube](https://www.youtube.com/)
+[YouTube](https://www.youtube.com/watch?v=Q8IJsduPAsE)
 
 To run the project
 ```
