@@ -1,18 +1,17 @@
-import streamlit as st
-import csv
-from validator_collection import checkers
-import re
 import os
-import pandas as pd
-from datetime import date
+import csv
 import time
-
-
-# GLOBAL
-USER_DATA_FILE = "user_data.csv"
-DECKS_DATA_FILE = "decks_data.csv"
-INCORRECT_ANS_DELAY = 1.5
-CORRECT_ANS_DELAY = 0.5
+import pandas as pd
+import streamlit as st
+from datetime import date
+from user import User
+from flashcard import Flashcard
+from constants import (
+    USER_DATA_FILE,
+    DECKS_DATA_FILE,
+    INCORRECT_ANS_DELAY,
+    CORRECT_ANS_DELAY,
+)
 
 
 # INTIAL SETUP
@@ -22,111 +21,6 @@ def setup_page():
         page_icon="🎩",
     )
     st.title("CS50P Flashcards Project")
-
-
-# USER CLASS
-class User:
-    def __init__(self, username: str, name: str, email: str) -> None:
-        self.username = username
-        self.name = name
-        self.email = email
-
-    @property
-    def username(self) -> str:
-        return self._username
-
-    @username.setter
-    def username(self, username: str) -> None:
-        username = username.strip().lower()
-        if not username or " " in username or checkers.is_email(username):
-            raise ValueError("Invalid username")
-        self._username = username
-
-    @property
-    def name(self) -> str:
-        return self._name
-
-    @name.setter
-    def name(self, name: str) -> None:
-        name = name.strip().title()
-        if not name or not re.match(r"^[A-Za-z .,]+$", name):
-            raise ValueError("Invalid name")
-        self._name = name
-
-    @property
-    def email(self) -> str:
-        return self._email
-
-    @email.setter
-    def email(self, email: str) -> None:
-        email = email.strip().lower()
-        if not checkers.is_email(email):
-            raise ValueError("Invalid email")
-        self._email = email
-
-    def save(self) -> None:
-        with open(USER_DATA_FILE, "w", newline="") as file:
-            writer = csv.DictWriter(file, fieldnames=["username", "name", "email"])
-            writer.writeheader()
-            writer.writerow(
-                {
-                    "username": self.username,
-                    "name": self.name,
-                    "email": self.email,
-                }
-            )
-
-
-# FLASHCARD CLASS
-class Flashcard:
-    def __init__(self, front: str, back: str) -> None:
-        self.front = front
-        self.back = back
-
-    def __str__(self) -> str:
-        return f"{self.front}: {self.back}"
-
-    @property
-    def front(self) -> str:
-        return self._front
-
-    @front.setter
-    def front(self, front: str) -> None:
-        front = front.strip().lower()
-        if not front:
-            raise ValueError("Invalid blank")
-        self._front = front
-
-    @property
-    def back(self) -> str:
-        return self._back
-
-    @back.setter
-    def back(self, back: str) -> None:
-        back = back.strip().lower()
-        if not back:
-            raise ValueError("Invalid blank")
-        self._back = back
-
-    def save(self, filename: str) -> None:
-        filename = filename.strip().lower()
-        if (
-            not filename
-            or filename == USER_DATA_FILE.removesuffix(".csv")
-            or filename == DECKS_DATA_FILE.removesuffix(".csv")
-        ):
-            raise ValueError("Invalid deck name")
-
-        with open(f"{filename}.csv", "a", newline="") as file:
-            writer = csv.DictWriter(file, fieldnames=["front", "back"])
-            if file.tell() == 0:
-                writer.writeheader()
-            writer.writerow(
-                {
-                    "front": self.front,
-                    "back": self.back,
-                }
-            )
 
 
 def main():

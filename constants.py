@@ -1,0 +1,4 @@
+USER_DATA_FILE = "user_data.csv"
+DECKS_DATA_FILE = "decks_data.csv"
+INCORRECT_ANS_DELAY = 1.5
+CORRECT_ANS_DELAY = 0.5
